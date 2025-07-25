@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-minimal
+  labels:
+    app: nginx-minimal
+    course: "k8s-crash-course"
+    section: "02-2-Replicas"
+  annotations:
+    description: "Minimal ReplicaSet running 3 NGINX pods."
+    version: "1.0"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-minimal
+  template:
+    metadata:
+      labels:
+        app: nginx-minimal
+        course: "k8s-crash-course"
+        section: "02-2-Replicas"
+      annotations:
+        description: "Pod created by nginx-minimal ReplicaSet."
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1

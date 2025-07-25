@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 02--deployment
+  labels:
+    course: "k8s-crash-course"
+    section: "02-3-Deployments"
+  annotations:
+    description: "Namespace for the Deployment examples."
+    version: "1.0"
