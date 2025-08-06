@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cronjob-date
+  namespace: 02--cronjob
+  labels:
+    app: cronjob-date
+    course: "k8s-crash-course"
+    section: "02-6-CronJobs"
+  annotations:
+    description: "CronJob that runs a simple date command every minute."
+    version: "1.0"
+spec:
+  schedule: "* * * * *" # This cron job runs every minute.
+  jobTemplate:
+    spec:
+      parallelism: 1 # Number of pods to run in parallel.
+      completions: 1 # Total number of pods to complete the job.
+      activeDeadlineSeconds: 60 # Maximum time the job can run.
+      backoffLimit: 1 # Number of retries before marking the job as failed.
+      template:
+        metadata:
+          labels:
+            app: cronjob-date
+            course: "k8s-crash-course"
+            section: "02-6-CronJobs"
+          annotations:
+            description: "CronJob template that runs a simple date command in a pod."
+            version: "1.0"
+        spec:
+          containers:
+            - name: date
+              image: cgr.dev/chainguard/busybox:latest
+              command: ["date"]
+              resources:
+                limits:
+                  memory: "64Mi"
+                requests:
+                  memory: "32Mi"
+                  cpu: "250m"
+              securityContext:
+                allowPrivilegeEscalation: false
+                privileged: false
+                runAsUser: 1001
+                runAsGroup: 1001
+                runAsNonRoot: true
+          restartPolicy: Never
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault

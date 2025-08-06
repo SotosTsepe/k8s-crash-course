@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 02--persistent-volume
+  labels:
+    course: "k8s-crash-course"
+    section: "02-12-Persistent-Volumes"
+  annotations:
+    description: "Namespace for PersistentVolume and PersistentVolumeClaim examples."
+    version: "1.0"

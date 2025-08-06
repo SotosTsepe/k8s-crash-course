@@ -1,0 +1,42 @@
+version: "3"
+
+env:
+  POD_NAMESPACE: "02--pod"
+
+tasks:
+  01-create-namespace:
+    cmds:
+      - kubectl create namespace 02--namespace-cli
+    desc: Create a namespace in the cluster.
+
+  02-apply-namespace:
+    cmds:
+      - kubectl apply -f pod-namespace.yaml
+      - kubens ${POD_NAMESPACE}
+    desc: Apply the namespace configuration to the cluster and set as default.
+
+  03-apply-minimal-pod-config:
+    cmds:
+      - kubectl apply -n ${POD_NAMESPACE} -f pod-nginx-minimal.yaml
+    desc: "Apply the minimal pod configuration."
+
+  04-port-forward-to-minimal-pod:
+    cmds:
+      - kubectl port-forward -n ${POD_NAMESPACE} nginx-minimal 8080:80
+    desc: "Port forward minimal"
+
+  05-apply-better-pod-config:
+    cmds:
+      - kubectl apply -n ${POD_NAMESPACE} -f pod-nginx.yaml
+    desc: "Apply the better pod configuration."
+
+  06-port-forward-to-better-pod:
+    cmds:
+      - kubectl port-forward -n ${POD_NAMESPACE} nginx 8080:8080
+    desc: "Port forward to the better pod configuration."
+
+  07-delete-namespaces:
+    cmds:
+      - kubectl delete namespace 02--namespace-cli
+      - kubectl delete -f pod-namespace.yaml
+    desc: Delete the namespace.

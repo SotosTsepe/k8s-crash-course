@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-minimal
+  namespace: 02--daemonset
+  labels:
+    app: fluentd-minimal
+    course: "k8s-crash-course"
+    section: "02-7-DaemonSets"
+  annotations:
+    description: "DaemonSet for Fluentd minimal logging."
+    version: "1.0"
+spec:
+  selector:
+    matchLabels:
+      app: fluentd-minimal
+  template:
+    metadata:
+      labels:
+        app: fluentd-minimal
+        course: "k8s-crash-course"
+        section: "02-7-DaemonSets"
+      annotations:
+        description: "DaemonSet template for Fluentd minimal logging."
+        version: "1.0"
+    spec:
+      containers:
+        - name: fluentd
+          image: fluent/fluentd:v1.18-debian

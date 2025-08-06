@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 02--replicaset
+  labels:
+    course: "k8s-crash-course"
+    section: "02-2-Replicas"
+  annotations:
+    description: "Namespace for the ReplicaSet examples."
+    version: "1.0"

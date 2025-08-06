@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 02--daemonset
+  labels:
+    course: "k8s-crash-course"
+    section: "02-7-DaemonSets"
+  annotations:
+    description: "Namespace for the DaemonSet examples."
+    version: "1.0"

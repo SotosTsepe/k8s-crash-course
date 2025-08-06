@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 02--configmap
+  labels:
+    course: "k8s-crash-course"
+    section: "02-9-ConfigMaps"
+  annotations:
+    description: "Namespace for the ConfigMap examples."
+    version: "1.0"

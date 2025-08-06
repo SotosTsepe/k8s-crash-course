@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-with-configmap
+  namespace: 02--configmap
+  labels:
+    app: nginx
+    course: "k8s-crash-course"
+    section: "02-9-ConfigMaps"
+  annotations:
+    description: "Pod example for NGINX using a ConfigMap."
+    version: "1.0"
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1
+      volumeMounts:
+        - name: configmap-file-like-keys
+          mountPath: /etc/config
+      envFrom:
+        - configMapRef:
+            name: property-like-keys
+  volumes:
+    - name: configmap-file-like-keys
+      configMap:
+        name: file-like-keys

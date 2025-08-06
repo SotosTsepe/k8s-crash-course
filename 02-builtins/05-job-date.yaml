@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-date
+  namespace: 02--job
+  labels:
+    app: job-date
+    course: "k8s-crash-course"
+    section: "02-5-Jobs"
+  annotations:
+    description: "A Job that runs a simple date command."
+    version: "1.0"
+spec:
+  parallelism: 2 # Number of pods to run in parallel.
+  completions: 2 # Number of successful completions required.
+  activeDeadlineSeconds: 60 # Maximum time in seconds for the job to complete.
+  backoffLimit: 1 # Number of retries before marking the job as failed.
+  template:
+    metadata:
+      labels:
+        app: job-date
+        course: "k8s-crash-course"
+        section: "02-5-Jobs"
+      annotations:
+        description: "Job template to run a date command in a pod."
+        version: "1.0"
+    spec:
+      containers:
+        - name: date
+          image: cgr.dev/chainguard/busybox:latest
+          command: ["date"]
+          resources:
+            limits:
+              memory: "64Mi"
+            requests:
+              memory: "32Mi"
+              cpu: "250m"
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            runAsUser: 1001
+            runAsGroup: 1001
+            runAsNonRoot: true
+      restartPolicy: Never
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault

@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-date-minimal
+  namespace: 02--job
+  labels:
+    app: job-date-minimal
+    course: "k8s-crash-course"
+    section: "02-5-Jobs"
+  annotations:
+    description: "Minimal Job to run a date command in a pod."
+    version: "1.0"
+spec:
+  template:
+    metadata:
+      labels:
+        app: job-date-minimal
+        course: "k8s-crash-course"
+        section: "02-5-Jobs"
+      annotations:
+        description: "Minimal Job template that runs a simple date command in a pod."
+        version: "1.0"
+    spec:
+      containers:
+        - name: date
+          image: busybox:1
+          command: ["date"]
+      restartPolicy: Never
+  backoffLimit: 4 # Number of retries before considering the job failed.

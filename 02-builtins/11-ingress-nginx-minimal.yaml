@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-minimal
+  namespace: 02--ingress
+  labels:
+    app: nginx-minimal
+    course: "k8s-crash-course"
+    section: "02-11-Ingress"
+  annotations:
+    description: "Minimal Ingress example for NGINX."
+    version: "1.0"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ingress-nginx-minimal.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-cluster-ip
+                port:
+                  number: 80

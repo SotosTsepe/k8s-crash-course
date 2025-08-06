@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-example
+  namespace: 02--persistent-volume
+  labels:
+    app: pvc-example
+    course: "k8s-crash-course"
+    section: "02-12-Persistent-Volumes"
+  annotations:
+    description: "PersistentVolumeClaim example."
+    version: "1.0"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  selector:
+    matchLabels:
+      app: pv-example # Match the PersistentVolume
+  storageClassName: standard

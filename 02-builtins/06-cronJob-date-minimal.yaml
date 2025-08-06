@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cronjob-date-minimal
+  namespace: 02--cronjob
+  labels:
+    app: cronjob-date-minimal
+    course: "k8s-crash-course"
+    section: "02-6-CronJobs"
+  annotations:
+    description: "Minimal CronJob that runs a simple date command every minute."
+    version: "1.0"
+spec:
+  schedule: "* * * * *" # This cron job runs every minute.
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: cronjob-date-minimal
+            course: "k8s-crash-course"
+            section: "02-6-CronJobs"
+          annotations:
+            description: "CronJob template that runs a simple date command in a pod."
+            version: "1.0"
+        spec:
+          containers:
+            - name: date
+              image: busybox:1
+              command: ["date"]
+          restartPolicy: Never
+      backoffLimit: 1 # Number of retries before marking the job as failed.

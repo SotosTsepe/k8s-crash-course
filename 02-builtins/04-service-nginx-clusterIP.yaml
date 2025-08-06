@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-cluster-ip
+  namespace: 02--service
+  labels:
+    app: nginx-minimal
+    course: "k8s-crash-course"
+    section: "02-4-Services"
+  annotations:
+    description: "ClusterIP service exposing NGINX pods."
+    version: "1.0"
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx-minimal
+  ports:
+    - protocol: TCP
+      port: 80 # This is the port that the service will expose.
+      targetPort: 80 # This is the port on the pod that the service will forward to.

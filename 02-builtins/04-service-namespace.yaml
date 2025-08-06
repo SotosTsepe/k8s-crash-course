@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 02--service
+  labels:
+    course: "k8s-crash-course"
+    section: "02-4-Services"
+  annotations:
+    description: "Namespace for the Service examples."
+    version: "1.0"

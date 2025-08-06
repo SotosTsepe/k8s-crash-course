@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: property-like-keys
+  namespace: 02--configmap
+  labels:
+    app: property-like-keys
+    course: "k8s-crash-course"
+    section: "02-9-ConfigMaps"
+  annotations:
+    description: "ConfigMap with file-like keys for NGINX."
+    version: "1.0"
+data:
+  APP_NAME: nginx-configMap
+  LOG_LEVEL: info
+  THIS: THAT

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-node-port
+  namespace: 02--service
+  labels:
+    app: nginx-minimal
+    course: "k8s-crash-course"
+    section: "02-4-Services"
+  annotations:
+    description: "NodePort service exposing NGINX pods."
+    version: "1.0"
+spec:
+  type: NodePort # Exposes the service on each node's IP at a static port
+  selector:
+    app: nginx-minimal
+  ports:
+    - protocol: TCP
+      port: 80 # This is the port that the service will expose.
+      targetPort: 80 # This is the port on the pod that the service will forward to.
+
+      # If you want to specify a nodePort, you can do so here:
+      # nodePort: 30XXX # This is the port on each node that will forward to the service.
+      # This port must be in the range 30000-32767.
+      # Note: The nodePort field is optional; if not specified, Kubernetes will automatically assign
+      # a port in the range 30000-32767.
+      # If you specify it, ensure it is within that range.
+---
+# This service will allow external traffic to access the NGINX pods via any node's IP
+# at the specified nodePort.
+# http://<node-ip>:30XXX
+# Ensure that the node IP is accessible from your network.
+# This is useful for development and testing purposes, but for production, consider using
+# LoadBalancer or Ingress resources.
+# Note: Make sure your cluster allows NodePort services and that the specified nodePort is not already in use.
+# You can check the assigned nodePort by running:
+# kubectl get svc nginx-node-port -n 02--service
+# This will show you the details of the service, including the nodePort assigned.
+# If you want to change the nodePort, you can edit the service using:
+# kubectl edit svc nginx-node-port -n 02--service
+# and modify the nodePort field as needed. Remember to apply the changes after editing.
+# You can also delete the service using:
+# kubectl delete svc nginx-nodePort -n 02--service
+# This will remove the service and free up the nodePort for other services.

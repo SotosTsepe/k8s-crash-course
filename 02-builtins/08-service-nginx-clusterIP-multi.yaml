@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-clusterip-multi
+  namespace: 02--statefulset
+  labels:
+    app: nginx-multi
+    course: "k8s-crash-course"
+    section: "02-8-StatefulSets"
+  annotations:
+    description: "ClusterIP service exposing multiple NGINX StatefulSet pods."
+    version: "1.0"
+spec:
+  type: ClusterIP
+  clusterIP: None # This allows the service to route to multiple pods. (Headless service)
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80 # This is the port that the service will expose.
+      targetPort: 80 # This is the port on the pod that the service will forward to.
+
+# This service will route traffic to multiple NGINX pods created by the StatefulSet.
+# It sets up a DNS for each replica in the StatefulSet, allowing direct access to each pod.
+# Example: nginx-0.nginx-clusterip-multi.default.svc.cluster.local
+# This is useful for applications that need to communicate with specific pod instances.

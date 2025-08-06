@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: 02--pod
+  labels:
+    course: "k8s-crash-course"
+    section: "02-1-Pods"
+  annotations:
+    description: "Namespace for Pod examples."
+    version: "1.0"

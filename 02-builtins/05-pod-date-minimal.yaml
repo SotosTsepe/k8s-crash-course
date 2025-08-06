@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-date-minimal
+  namespace: 02--job
+  labels:
+    app: pod-date-minimal
+    course: "k8s-crash-course"
+    section: "02-5-Jobs"
+  annotations:
+    description: "Minimal Pod to run a date command."
+    version: "1.0"
+spec:
+  containers:
+    - name: date-container
+      image: busybox:1
+      command: ["date"]
+  restartPolicy: Never
