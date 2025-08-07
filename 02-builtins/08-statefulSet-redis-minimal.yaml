@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-minimal
+  namespace: 02--statefulset
+  labels:
+    app: redis-minimal
+    course: "k8s-crash-course"
+    section: "02-8-StatefulSets"
+  annotations:
+    description: "Minimal StatefulSet example for Redis."
+    version: "1.0"
+spec:
+  serviceName: redis-minimal
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis-minimal
+  template:
+    metadata:
+      labels:
+        app: redis-minimal
+        course: "k8s-crash-course"
+        section: "02-8-StatefulSets"
+      annotations:
+        description: "StatefulSet template for Redis pods."
+        version: "1.0"
+    spec:
+      containers:
+        - name: redis
+          image: redis:8

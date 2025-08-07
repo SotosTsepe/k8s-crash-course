@@ -265,35 +265,51 @@ They are used for execution of workloads that run to completion.
 
 Useful Commands:
 ```bash
-kubectl create job <JOB_NAME> # Create a job with the specified name.
-kubectl get jobs              # Get jobs in the current namespace.
+kubectl create job <JOB_NAME> --image=<IMAGE_NAME>        # Create a job with the specified name.
+kubectl create job <JOB_NAME>--image=busybox -- <COMMAND> # Create a job with a command.
+kubectl get jobs                                          # Get jobs in the current namespace.
 ```
 
 Run the following:
 ```bash
-# Create a namespace for the Services and switch to it.
-kubectl apply -f 04-service-namespace.yaml && kubens 02--service
-# Apply the Deployment.
-kubectl apply -f 04-service-deployment.yaml
-# Apply the ClusterIP.
-kubectl apply -f 04-service-nginx-clusterIP.yaml
-# Apply the LoadBalancer.
-kubectl apply -f 04-service-nginx-loadBalancer.yaml
-# Apply the NodePort.
-kubectl apply -f 04-service-nginx-nodePort.yaml
+# Create a namespace for the Jobs and switch to it.
+kubectl apply -f 05-job-namespace.yaml && kubens 02--job
+# Apply the minimal Pod.
+kubectl apply -f 05-pod-date-minimal.yaml
+# Check the Pod logs.
+kubectl logs pod-date-minimal
+
+# Apply the minimal Job.
+kubectl apply -f 05-job-date-minimal.yaml
+# Apply the Job.
+kubectl apply -f 05-job-date.yaml
 ```
 
 ---
 
 ### Subsection 06 - CronJobs
 
-Manually trigger the cron job so that it runs immediately.
+Cronjobs add the concept of a schedule.
+They are used for periodic execution of workloads that run to completion.
+
+![cronjob-image](./assets/cronjob.png)
+
+Useful Commands:
 ```bash
+# Manually trigger a Job from a CronJob so that it runs immediately.
 kubectl create job --from=cronjob/<CRONJOB_NAME> <JOB_NAME>
 ```
 
-Example:
+Run the following:
 ```bash
+# Create a namespace for the CronJobs and switch to it.
+kubectl apply -f 06-cronJob-namespace.yaml && kubens 02--cronjob
+# Apply the CronJob.
+kubectl apply -f 06-cronJob-date.yaml
+# Get the Jobs in the current namespace.
+kubectl get jobs
+
+# Now create a Job from the CronJob and check again the Jobs.
 kubectl create job --from=cronjob/cronjob-date manually-triggered
 ```
 
@@ -301,31 +317,82 @@ kubectl create job --from=cronjob/cronjob-date manually-triggered
 
 ### Subsection 07 - DaemonSets
 
-Examples get widely defined pods:
+A DaemonSet runs a copy of the specified pod on all (or a specified subset of) nodes in the cluster.
 
-kubectl get pods -o wide
+Useful for applications such as:
+  - Cluster storage daemon
+  - Log aggregation
+  - Node monitoring
 
-Get nodes
-kubectl get nodes
+![daemonSet-image](./assets/daemonSet.png)
+
+Useful Commands:
+```bash
+kubectl get pods -o wide # Get pods with additional details like, pod IP, node name, and container images
+kubectl get nodes        # Get cluster nodes.
+```
+
+Run the following:
+```bash
+# Create a namespace for the DaemonSet and switch to it.
+kubectl apply -f 07-daemonSet-namespace.yaml && kubens 02--daemonset
+# Apply the minimal DaemonSet.
+kubectl apply -f 07-daemonSet-fluentd-minimal.yaml
+```
 
 ---
 
 ### Subsection 08 - StatefulSets
 
 Similar to Deployment, except:
-- Pods get sticky identity (pod-0, pod-1, ...)
-- Each pod mounts separate volumes
-- Rollout behavior is ordered
+- Pods get sticky identity (pod-0, pod-1, ...).
+- Each pod mounts separate volumes.
+- Rollout behavior is ordered.
+
+Used for workloads that require stable network identity and persistent storage —
+commonly used for stateful applications like databases (e.g. primary vs read-replica setups).
+
+![statefulSet-image](./assets/statefulSet.png)
+
+#### Example 1
 
 Run the following:
 ```bash
+# Create a namespace for the StatefulSet and switch to it.
 kubectl apply -f 08-statefulSet-namespace.yaml && kubens 02--statefulset
+# Create the internal Load Balancer.
 kubectl apply -f 08-service-nginx-clusterIP.yaml
+# Create the "headless" service.
 kubectl apply -f 08-service-nginx-clusterIP-multi.yaml
+# Apply the StatefulSet.
 kubectl apply -f 08-statefulSet-nginx-init-container.yaml
 
 kubectl port-forward nginx-with-init-container-0 8080:80
-kubectl port-forward nginx-with-init-container-1 8080:80 # After exiting the previous command.
+# After exiting the previous command.
+kubectl port-forward nginx-with-init-container-1 8080:80
+```
+
+While the port-forward command is active, navigate to http://localhost:8080.
+
+#### Example 2
+
+```bash
+# Apply the headless service and StatefulSet
+kubectl apply -f redis-headless-service.yaml
+kubectl apply -f redis-statefulset.yaml
+
+# Watch pods come up in order
+kubectl get pods -n 02--statefulset -l app=redis -w
+
+# Check Redis roles
+kubectl exec -n 02--statefulset redis-0 -- redis-cli ROLE
+kubectl exec -n 02--statefulset redis-1 -- redis-cli ROLE
+kubectl exec -n 02--statefulset redis-2 -- redis-cli ROLE
+
+# Test replication
+kubectl exec -n 02--statefulset redis-0 -- redis-cli SET hello world
+kubectl exec -n 02--statefulset redis-1 -- redis-cli GET hello
+kubectl exec -n 02--statefulset redis-2 -- redis-cli GET hello
 ```
 
 ---
