@@ -356,16 +356,18 @@ commonly used for stateful applications like databases (e.g. primary vs read-rep
 
 #### Example 1
 
+Simple NGINX StatefulSet.
+
 Run the following:
 ```bash
 # Create a namespace for the StatefulSet and switch to it.
-kubectl apply -f 08-statefulSet-namespace.yaml && kubens 02--statefulset
+kubectl apply -f 08-1-statefulSet-namespace.yaml && kubens 02--statefulset
 # Create the internal Load Balancer.
-kubectl apply -f 08-service-nginx-clusterIP.yaml
+kubectl apply -f 08-1-service-nginx-clusterIP.yaml
 # Create the "headless" service.
-kubectl apply -f 08-service-nginx-clusterIP-multi.yaml
+kubectl apply -f 08-1-service-nginx-clusterIP-multi.yaml
 # Apply the StatefulSet.
-kubectl apply -f 08-statefulSet-nginx-init-container.yaml
+kubectl apply -f 08-1-statefulSet-nginx-init-container.yaml
 
 kubectl port-forward nginx-with-init-container-0 8080:80
 # After exiting the previous command.
@@ -376,23 +378,26 @@ While the port-forward command is active, navigate to http://localhost:8080.
 
 #### Example 2
 
+A more proper example with Redis.
+
 ```bash
-# Apply the headless service and StatefulSet
-kubectl apply -f redis-headless-service.yaml
-kubectl apply -f redis-statefulset.yaml
+# Apply the cluster IP, headless service and StatefulSet
+kubectl apply -f 08-2-service-redis-clusterIP.yaml
+kubectl apply -f 08-2-service-redis-clusterIP-headless.yaml
+kubectl apply -f 08-2-statefulSet-redis-init-container.yaml
 
 # Watch pods come up in order
-kubectl get pods -n 02--statefulset -l app=redis -w
+watch kubectl get pods -l app=redis -w
 
 # Check Redis roles
-kubectl exec -n 02--statefulset redis-0 -- redis-cli ROLE
-kubectl exec -n 02--statefulset redis-1 -- redis-cli ROLE
-kubectl exec -n 02--statefulset redis-2 -- redis-cli ROLE
+kubectl exec redis-0 -- redis-cli ROLE
+kubectl exec redis-1 -- redis-cli ROLE
+kubectl exec redis-2 -- redis-cli ROLE
 
 # Test replication
-kubectl exec -n 02--statefulset redis-0 -- redis-cli SET hello world
-kubectl exec -n 02--statefulset redis-1 -- redis-cli GET hello
-kubectl exec -n 02--statefulset redis-2 -- redis-cli GET hello
+kubectl exec -it redis-0 -- redis-cli SET course "k8s-crash-course"
+kubectl exec -it redis-1 -- redis-cli GET course
+kubectl exec -it redis-2 -- redis-cli GET course 
 ```
 
 ---

@@ -11,7 +11,7 @@ metadata:
     description: "StatefulSet example for NGINX with an init container."
     version: "1.0"
 spec:
-  serviceName: nginx
+  serviceName: nginx-cluster-ip-multi
   replicas: 3
   selector:
     matchLabels:

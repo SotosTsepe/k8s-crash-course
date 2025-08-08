@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis-with-init-container
+  name: redis
   namespace: 02--statefulset
   labels:
     app: redis-with-init-container
@@ -11,7 +11,7 @@ metadata:
     description: "StatefulSet example for Redis with an init container."
     version: "1.0"
 spec:
-  serviceName: redis
+  serviceName: redis-headless
   replicas: 3
   selector:
     matchLabels:
@@ -37,33 +37,33 @@ spec:
               HOSTNAME=$(hostname)
               ORDINAL=${HOSTNAME##*-}
 
-              echo "bind 0.0.0.0" > /redis-conf/redis.conf
-              echo "port 6379" >> /redis-conf/redis.conf
-              echo "protected-mode no" >> /redis-conf/redis.conf
-              echo "dir /data" >> /redis-conf/redis.conf
+              echo "bind 0.0.0.0" > /etc/redis/redis.conf
+              echo "port 6379" >> /etc/redis/redis.conf
+              echo "protected-mode no" >> /etc/redis/redis.conf
+              echo "dir /data" >> /etc/redis/redis.conf
 
               if [ "$ORDINAL" -ne 0 ]; then
-                echo "replicaof redis-0.redis 6379" >> /redis-conf/redis.conf
+                echo "replicaof redis-0.redis-headless 6379" >> /etc/redis/redis.conf
               fi
           volumeMounts:
             - name: redis-config
-              mountPath: /redis-conf
-            - name: data
-              mountPath: /data
+              mountPath: /etc/redis
+            # - name: data
+            #   mountPath: /data
       containers:
         - name: redis
           image: redis:8
           ports:
             - containerPort: 6379
-          command: ["redis-server", "/redis-conf/redis.conf"]
+          command: ["redis-server", "/etc/redis/redis.conf"]
           volumeMounts:
-            - name: data
-              mountPath: /data
-            - name: config
-              mountPath: /etc/redis/redis.conf
+            - name: redis-config
+              mountPath: /etc/redis
+            # - name: data
+            #   mountPath: /data
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: redis-config
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: standard
@@ -71,6 +71,3 @@ spec:
         resources:
           requests:
             storage: 100Mi
-  volumeMounts:
-    - name: redis-config # This is where the init container writes the redis.conf file.
-      emptyDir: {} # This is a temporary directory that will be created for the init container.
