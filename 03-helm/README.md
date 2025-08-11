@@ -1,0 +1,1 @@
+kubectl get cm helm-v0.1-configmap -o yaml | yq

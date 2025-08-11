@@ -1,0 +1,17 @@
+🚀 All systems go!
+
+{{ .Chart.Name }} (v{{ .Chart.AppVersion }}) is now orbiting in the {{ template "environment" . }} environment.
+
+🛰 Release: {{ .Release.Name }}
+📂 Namespace: {{ .Release.Namespace }}
+🗺 ConfigMap: helm-{{ .Release.Name }}-configMap
+
+📡 Check status:  
+  helm status {{ .Release.Name }}
+
+🛠 Config Data (enabled only):
+{{- range .Values.configData }}
+{{- if .enabled }}
+  - {{ .key }} = {{ .value }}
+{{- end }}
+{{- end }}

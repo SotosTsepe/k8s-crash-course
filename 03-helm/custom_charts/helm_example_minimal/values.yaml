@@ -1,0 +1,6 @@
+environment: dev
+
+configData:
+  - key: "exampleKey"
+    value: "exampleValue"
+    enabled: true
